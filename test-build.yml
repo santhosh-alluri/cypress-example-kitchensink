@@ -1,0 +1,33 @@
+---
+resources:
+  - name: cypressrun
+    type: git
+    source:
+      branch: master
+      uri: https://github.com/santhosh-alluri/cypress-example-kitchensink.git
+jobs:
+  - name: cypressuitests
+    plan:
+      - get: cypressrun
+      - task: uitests
+        config: 
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ddubson/cypress-e2e
+              tag: latest
+          inputs:
+          - name: cypressrun
+          run:
+            path: sh
+            args:
+            - -exec
+            - |
+              ls -la
+              pwd
+              cd "cypressrun"
+              npm install --force
+              npm start
+              npm run cy:open
+
